@@ -1,0 +1,59 @@
+/* ── Global ── */
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f8f5f7;
+}
+
+/* ── Main content area (below navbar) ── */
+.main-content {
+  min-height: calc(100vh - 56px);
+  background: #f8f5f7;
+}
+
+/* ── Product cards (global, usado en otros módulos) ── */
+.product-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.09);
+  transition: transform .2s, box-shadow .2s;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(136,14,79,.2);
+}
+
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-card .card-body {
+  padding: 1rem;
+}
+
+.product-card .precio {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #880e4f;
+}
+
+/* ── Botón primario florería ── */
+.btn-floreria {
+  background: #880e4f;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background .18s;
+}
+.btn-floreria:hover { background: #6d003f; color: #fff; }
+
+/* ── Impresión (factura) ── */
+@media print {
+  nav, .btn, button { display: none !important; }
+  body { background: #fff; }
+}

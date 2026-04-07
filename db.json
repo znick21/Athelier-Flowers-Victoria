@@ -1,0 +1,93 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nombre": "Victoria López",
+      "email": "admin@flores.com",
+      "password": "$2a$10$QMwNmx95NG7a8Sh6quaxGeV5QaeahcWUjrZu2bQ/uEHNoGg7QXSGC",
+      "role": "admin",
+      "token": "tok-admin-001"
+    },
+    {
+      "id": 2,
+      "nombre": "Carlos Mendoza",
+      "email": "vendedor@flores.com",
+      "password": "$2a$10$FPVLfXIuT8T2SYMQixtAdeDqyfa5WRd6kjYvDH6CicJrWf5bSTIxq",
+      "role": "vendedor",
+      "token": "tok-vend-001"
+    },
+    {
+      "id": 3,
+      "nombre": "María Quispe",
+      "email": "cliente@flores.com",
+      "password": "$2a$10$QW2T60qH3jFE0j0.YbrM9.vMO923bqlhXGGxHqajQKJmp6jAP2iYS",
+      "role": "cliente",
+      "token": "tok-cli-001"
+    }
+  ],
+  "categorias": [
+    {
+      "id": 1,
+      "nombre": "Rosas",
+      "descripcion": "Flores tipo rosa",
+      "token": "cat-tok-001"
+    },
+    {
+      "id": 2,
+      "nombre": "Girasoles",
+      "descripcion": "Flores tipo girasol",
+      "token": "cat-tok-002"
+    }
+  ],
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Rosa Roja",
+      "precio": 25,
+      "stock": 100,
+      "categoriaId": 1,
+      "imagen": "https://picsum.photos/seed/redrose/400/300",
+      "token": "prod-tok-001"
+    },
+    {
+      "id": 2,
+      "nombre": "Bouquet de Girasoles",
+      "precio": 45,
+      "stock": 50,
+      "categoriaId": 2,
+      "imagen": "https://picsum.photos/seed/sunflowerx/400/300",
+      "token": "prod-tok-002"
+    }
+  ],
+  "clientes": [
+    {
+      "id": 1,
+      "nombre": "Juan Perez",
+      "email": "juan@mail.com",
+      "telefono": "555-1234",
+      "userId": 3,
+      "token": "cli-tok-001"
+    }
+  ],
+  "pedidos": [
+    {
+      "clienteId": 1,
+      "productoId": 1,
+      "cantidad": 2,
+      "total": 50,
+      "estado": "entregado",
+      "fecha": "2026-04-07",
+      "id": 1
+    }
+  ],
+  "pagos": [
+    {
+      "id": 1,
+      "pedidoId": 1,
+      "monto": 50,
+      "metodo": "efectivo",
+      "fecha": "2026-04-06",
+      "token": "pag-tok-001"
+    }
+  ]
+}
