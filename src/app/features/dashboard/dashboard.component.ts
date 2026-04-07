@@ -2,8 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductoService } from '../../core/services/producto.service';
 import { CategoriaService } from '../../core/services/categoria.service';
-import { PedidoService } from '../../core/services/pedido.service';
-import { ClienteService } from '../../core/services/cliente.service';
 import { Producto } from '../../core/models/producto.model';
 import { Categoria } from '../../core/models/categoria.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -25,12 +23,6 @@ import { AuthService } from '../../core/services/auth.service';
       padding: 2rem 1.5rem 1.5rem;
       border-radius: 0 0 12px 12px;
       text-align: left;
-    }
-    .stat-card {
-      border-radius: 12px;
-      padding: 1.2rem;
-      color: #fff;
-      text-align: center;
     }
     .welcome-bar {
       background: linear-gradient(90deg, #880e4f, #c2185b);
@@ -99,38 +91,6 @@ import { AuthService } from '../../core/services/auth.service';
         <div>
           <h5 class="mb-0 fw-bold">Bienvenido, {{ nombre }}</h5>
           <small class="opacity-75">Atelier Flowers Victoria — Panel de gestión</small>
-        </div>
-      </div>
-
-      <!-- Estadísticas -->
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-          <div class="stat-card" style="background:#880e4f">
-            <div style="font-size:1.8rem">📦</div>
-            <div class="fs-4 fw-bold">{{ totalProductos }}</div>
-            <small>Productos</small>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card" style="background:#6a1b4d">
-            <div style="font-size:1.8rem">🏷️</div>
-            <div class="fs-4 fw-bold">{{ totalCategorias }}</div>
-            <small>Categorías</small>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card" style="background:#4a0d38">
-            <div style="font-size:1.8rem">👥</div>
-            <div class="fs-4 fw-bold">{{ totalClientes }}</div>
-            <small>Clientes</small>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card" style="background:#2d0024">
-            <div style="font-size:1.8rem">🛒</div>
-            <div class="fs-4 fw-bold">{{ totalPedidos }}</div>
-            <small>Pedidos</small>
-          </div>
         </div>
       </div>
 
@@ -230,25 +190,17 @@ import { AuthService } from '../../core/services/auth.service';
 export class DashboardComponent implements OnInit {
   private productoSvc  = inject(ProductoService);
   private categoriaSvc = inject(CategoriaService);
-  private pedidoSvc    = inject(PedidoService);
-  private clienteSvc   = inject(ClienteService);
   private auth         = inject(AuthService);
 
-  productos:      Producto[]  = [];
-  categorias:     Categoria[] = [];
-  totalProductos  = 0;
-  totalCategorias = 0;
-  totalPedidos    = 0;
-  totalClientes   = 0;
+  productos:  Producto[]  = [];
+  categorias: Categoria[] = [];
 
   get nombre()             { return this.auth.getNombre(); }
   get productosConImagen() { return this.productos.filter(p => p.imagen); }
 
   ngOnInit(): void {
-    this.productoSvc.getAll().subscribe(d  => { this.productos = d; this.totalProductos = d.length; });
-    this.categoriaSvc.getAll().subscribe(d => { this.categorias = d; this.totalCategorias = d.length; });
-    this.pedidoSvc.getAll().subscribe(d   => this.totalPedidos = d.length);
-    this.clienteSvc.getAll().subscribe(d  => this.totalClientes = d.length);
+    this.productoSvc.getAll().subscribe(d  => this.productos  = d);
+    this.categoriaSvc.getAll().subscribe(d => this.categorias = d);
   }
 
   nombreCategoria(id: number): string {
