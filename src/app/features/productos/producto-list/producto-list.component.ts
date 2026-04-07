@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ProductoService } from '../../../core/services/producto.service';
 import { CategoriaService } from '../../../core/services/categoria.service';
@@ -10,47 +11,89 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-producto-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div class="container mt-4">
+
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Productos</h4>
-        <a class="btn btn-success btn-sm" routerLink="/productos/nuevo" *ngIf="esAdmin">+ Nuevo</a>
+        <h4 class="fw-bold mb-0" style="color:#880e4f">📦 Productos</h4>
+        <a class="btn btn-sm text-white" style="background:#880e4f"
+           routerLink="/productos/nuevo" *ngIf="esAdmin">+ Nuevo</a>
       </div>
-      <table class="table table-bordered table-hover">
-        <thead class="table-success">
-          <tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Categoría</th><th>Token</th><th *ngIf="esAdmin">Acciones</th></tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let p of productos">
-            <td>{{ p.id }}</td>
-            <td>{{ p.nombre }}</td>
-            <td>Bs. {{ p.precio }}</td>
-            <td>{{ p.stock }}</td>
-            <td>{{ nombreCategoria(p.categoriaId) }}</td>
-            <td><small class="text-muted">{{ p.token }}</small></td>
-            <td *ngIf="esAdmin">
-              <a class="btn btn-warning btn-sm me-1" [routerLink]="['/productos/editar', p.id]">Editar</a>
-              <button class="btn btn-danger btn-sm" (click)="eliminar(p.id!)">Eliminar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+      <div class="input-group mb-3" style="max-width:360px">
+        <span class="input-group-text bg-white">🔍</span>
+        <input class="form-control" type="text"
+               placeholder="Buscar por nombre o categoría..."
+               [(ngModel)]="busqueda">
+        <button *ngIf="busqueda" class="btn btn-outline-secondary"
+                type="button" (click)="busqueda=''">✕</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead style="background:#f3e5f5">
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Categoría</th>
+              <th *ngIf="esAdmin">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of filtrados">
+              <td class="text-muted">{{ p.id }}</td>
+              <td class="fw-semibold">{{ p.nombre }}</td>
+              <td>Bs. {{ p.precio }}</td>
+              <td>
+                <span [class]="p.stock <= 5 ? 'badge bg-warning text-dark' : 'badge bg-success'">
+                  {{ p.stock }}
+                </span>
+              </td>
+              <td>{{ nombreCategoria(p.categoriaId) }}</td>
+              <td *ngIf="esAdmin">
+                <a class="btn btn-sm btn-outline-warning me-1"
+                   [routerLink]="['/productos/editar', p.id]">Editar</a>
+                <button class="btn btn-sm btn-outline-danger"
+                        (click)="eliminar(p.id!)">Eliminar</button>
+              </td>
+            </tr>
+            <tr *ngIf="filtrados.length === 0">
+              <td [attr.colspan]="esAdmin ? 6 : 5" class="text-center text-muted py-3">
+                Sin resultados para "{{ busqueda }}"
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <small class="text-muted">{{ filtrados.length }} de {{ productos.length }} productos</small>
     </div>
   `
 })
 export class ProductoListComponent implements OnInit {
-  private svc = inject(ProductoService);
+  private svc    = inject(ProductoService);
   private catSvc = inject(CategoriaService);
-  private auth = inject(AuthService);
+  private auth   = inject(AuthService);
 
-  productos: Producto[] = [];
+  productos:  Producto[]  = [];
   categorias: Categoria[] = [];
-  esAdmin = this.auth.getRole() === 'admin';
+  busqueda  = '';
+  esAdmin   = this.auth.getRole() === 'admin';
+
+  get filtrados(): Producto[] {
+    const q = this.busqueda.toLowerCase().trim();
+    if (!q) return this.productos;
+    return this.productos.filter(p =>
+      p.nombre.toLowerCase().includes(q) ||
+      this.nombreCategoria(p.categoriaId).toLowerCase().includes(q)
+    );
+  }
 
   ngOnInit(): void {
-    this.svc.getAll().subscribe(data => this.productos = data);
-    this.catSvc.getAll().subscribe(data => this.categorias = data);
+    this.svc.getAll().subscribe(d    => this.productos  = d);
+    this.catSvc.getAll().subscribe(d => this.categorias = d);
   }
 
   nombreCategoria(id: number): string {
@@ -59,7 +102,8 @@ export class ProductoListComponent implements OnInit {
 
   eliminar(id: number): void {
     if (confirm('¿Eliminar producto?')) {
-      this.svc.delete(id).subscribe(() => this.svc.getAll().subscribe(data => this.productos = data));
+      this.svc.delete(id).subscribe(() =>
+        this.svc.getAll().subscribe(d => this.productos = d));
     }
   }
 }
