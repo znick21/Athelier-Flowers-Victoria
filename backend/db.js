@@ -8,10 +8,13 @@ const pool = mysql.createPool({
   database:          process.env.DB_NAME || 'floreriabd',
   port:              Number(process.env.DB_PORT) || 3306,
   charset:           'utf8mb4',
-  decimalNumbers:    true
+  decimalNumbers:    true,
+  // ESTO ES LO QUE TE FALTA PARA QUE TiDB TE DEJE ENTRAR:
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-// Forzar UTF-8 en cada conexión nueva del pool
 pool.pool.on('connection', connection => {
   connection.query("SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'");
 });
